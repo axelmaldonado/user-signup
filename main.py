@@ -10,7 +10,6 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), a
 app = Flask(__name__)
 app.config['DEBUG'] = True  
 
-
 def is_valid(data):
     if len(data) > 2 and len(data) < 21:
         return True
@@ -53,7 +52,6 @@ def validate_data():
         except AttributeError:
             email_error = "That's not a valid email"
  
-
 #check username
     if not is_valid(username):
         username_error = "That's not a valid username"
@@ -75,7 +73,6 @@ def validate_data():
         if len(password) < 1:
             verify_error = "Passwords don't match"
 
-
     password = ''
     verify = ''
     email = ''
@@ -94,7 +91,6 @@ def validate_data():
             email=email,
             email_error=email_error)
     
-
 @app.route("/welcome")
 def welcome():
     username = request.args.get('username')
