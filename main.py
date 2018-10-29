@@ -10,6 +10,7 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), a
 app = Flask(__name__)
 app.config['DEBUG'] = True  
 
+
 def is_valid(data):
     if len(data) > 2 and len(data) < 21:
         return True
@@ -21,7 +22,7 @@ def is_verified(password_arg, verify_arg):
         return True
     else:
         return False
-
+    
 @app.route("/")
 def index():
     template = jinja_env.get_template('hello_user.html')
@@ -39,11 +40,24 @@ def validate_data():
     verify_error = ''
     email_error = ''
     
+#check email
+    if email == '':
+        email_error = ''
+    else:
+        try:
+            match = re.match(r'^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$', email)
+            if match.group() == email:
+                email_error = ''
+            else:
+                email_error = "That's not a valid email"
+        except AttributeError:
+            email_error = "That's not a valid email"
+ 
+
 #check username
     if not is_valid(username):
         username_error = "That's not a valid username"
         username = ''
-
     else:
         if len(username) < 0:
             username_error = "That's not a valid username"
@@ -61,11 +75,12 @@ def validate_data():
         if len(password) < 1:
             verify_error = "Passwords don't match"
 
+
     password = ''
     verify = ''
     email = ''
 
-    if not username_error and not password_error and not verify_error:
+    if not username_error and not password_error and not verify_error and not email_error:
         return redirect('/welcome?username={0}'.format(username))
 
     else:
@@ -75,7 +90,9 @@ def validate_data():
             verify_error=verify_error,
             username=username,
             password=password, 
-            verify=verify)
+            verify=verify,
+            email=email,
+            email_error=email_error)
     
 
 @app.route("/welcome")
